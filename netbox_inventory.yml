@@ -1,0 +1,5 @@
+plugin: netbox
+query_filters:
+  - status: 1
+group_by:
+  - platforms

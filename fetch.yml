@@ -1,0 +1,25 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: backup EdgeOS devices
+  hosts: platforms_EdgeOS
+  gather_facts: no
+  tasks:
+  - name: fetch and backup configuration
+    edgeos_config:
+      backup: yes
+      backup_options:
+        filename: "{{ inventory_hostname }}.cfg"
+
+- name: backup EdgeSwitch devices
+  hosts: platforms_EdgeSwitch
+  gather_facts: no
+  tasks:
+  - name: fetch configuration
+    edgeswitch_facts:
+      gather_subset: config
+  - name: backup configuration
+    delegate_to: localhost
+    copy:
+      content: "{{ ansible_net_config | regex_replace('!.*\n','') }}"
+      dest: "backup/{{ inventory_hostname }}.cfg"
